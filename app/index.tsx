@@ -1,25 +1,44 @@
-import { useState } from 'react';
+import {
+  useEffect,
+  useState
+} from 'react';
 
 import {
-    Alert,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Alert,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
 import { api } from '../src/api/client';
+import {
+  getToken,
+  removeToken,
+  saveToken
+} from '../src/storage/authStorage';
 
 export default function Home() {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [logged, setLogged] = useState(false);
+
+  useEffect(() => {
+    async function loadToken() {
+      const token = await getToken();
+      if (token) {
+        setLogged(true);
+      }
+    }
+
+    loadToken();
+  }, []);
 
   async function handleLogin() {
 
     try {
-
       const response = await api.post(
         '/api/login',
         {
@@ -28,10 +47,10 @@ export default function Home() {
         }
       );
 
-      Alert.alert(
-        'Login OK',
-        response.data.access_token
-      );
+      const token = response.data.access_token;
+      await saveToken(token);
+
+      Alert.alert('Sucesso', 'Login realizado');
 
     } catch (error: any) {
 
@@ -43,36 +62,60 @@ export default function Home() {
     }
   }
 
+  async function handleLogout() {
+    await removeToken();
+    setLogged(false);
+  }
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>
-        Game Tracker 🎮
-      </Text>
 
-      <TextInput
-        placeholder="Email"
-        style={styles.input}
-        value={email}
-        onChangeText={setEmail}
-        autoCapitalize="none"
-      />
+      {logged ? (
+        <>
+          <Text style={styles.title}>
+            Dashboard 🎮
+          </Text>
 
-      <TextInput
-        placeholder="Senha"
-        secureTextEntry
-        style={styles.input}
-        value={password}
-        onChangeText={setPassword}
-      />
+          <TouchableOpacity 
+            style={styles.button}
+            onPress={handleLogout}
+          >
+            <Text style={styles.buttonText}>
+              Sair
+            </Text>
+          </TouchableOpacity>
+        </>
+      ) : (
+        <>
+          <Text style={styles.title}>Game Tracker 🎮</Text>
 
-      <TouchableOpacity
-        style={styles.button}
-        onPress={handleLogin}
-      >
-        <Text style={styles.buttonText}>
-          Entrar
-        </Text>
-      </TouchableOpacity>
+          <TextInput
+            placeholder="Email"
+            style={styles.input}
+            value={email}
+            onChangeText={setEmail}
+            autoCapitalize="none"
+          />
+
+          <TextInput
+            placeholder="Senha"
+            secureTextEntry
+            style={styles.input}
+            value={password}
+            onChangeText={setPassword}
+          />
+
+          <TouchableOpacity
+            style={styles.button}
+            onPress={handleLogin}
+          >
+            <Text style={styles.buttonText}>
+              Entrar
+            </Text>
+          </TouchableOpacity>
+        </>
+      )}
+
     </View>
   );
 }
