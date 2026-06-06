@@ -52,4 +52,3 @@ Join our community of developers creating universal apps.
 =======
 # game-tracker-mobile
 Consumindo game_tracker api no mobile
->>>>>>> 72e013f714a1fb4783a5aa1d959dfd4a176674aa
