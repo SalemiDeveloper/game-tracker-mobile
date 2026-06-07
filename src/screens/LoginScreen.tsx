@@ -1,24 +1,19 @@
 import { useState } from 'react';
 
 import {
-    Alert,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Alert,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
+import { router } from 'expo-router';
 import { api } from '../api/client';
 import { saveToken } from '../storage/authStorage';
 
-type Props = {
-  onLogin: () => void;
-};
-
-export default function LoginScreen({
-  onLogin,
-}: Props) {
+export default function LoginScreen() {
 
   const [email, setEmail] =
     useState('');
@@ -34,7 +29,7 @@ export default function LoginScreen({
       const token = response.data.access_token;
 
       await saveToken(token);
-      onLogin();
+      router.replace('/dashboard');
 
     } catch (error: any) {
       Alert.alert('Erro', error.response?.data?.message ?? 'Erro ao fazer login');
