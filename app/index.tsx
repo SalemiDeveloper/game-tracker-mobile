@@ -1,7 +1,7 @@
 import { router } from 'expo-router';
 import { useEffect } from 'react';
 
-import { getToken } from '../src/storage/authStorage';
+import { getToken } from '@/src/storage/authStorage';
 
 export default function Home() {
 
@@ -12,7 +12,7 @@ export default function Home() {
       const token = await getToken();
 
       if (token) {
-        router.replace('/dashboard');
+        router.replace('/(tabs)/dashboard');
       } else {
         router.replace('/login');
       }

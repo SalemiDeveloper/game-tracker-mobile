@@ -29,7 +29,7 @@ export default function LoginScreen() {
       const token = response.data.access_token;
 
       await saveToken(token);
-      router.replace('/dashboard');
+      router.replace('/(tabs)/dashboard');
 
     } catch (error: any) {
       Alert.alert('Erro', error.response?.data?.message ?? 'Erro ao fazer login');
