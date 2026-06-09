@@ -1,4 +1,6 @@
 import {
+    FlatList,
+    StyleSheet,
     Text,
     View,
 } from 'react-native';
@@ -12,14 +14,13 @@ import { getGames } from '@/src/services/gameService';
 
 export default function Games() {
 
-    const [games, setGames] = useState([]);
+    const [games, setGames] = useState<any[]>([]);
 
     useEffect(() => {
 
         async function loadGames() {
             try {
                 const data = await getGames();
-                console.log(data);
                 setGames(data);
             } catch (error) {
                 console.log(error);
@@ -30,21 +31,57 @@ export default function Games() {
     }, []);
 
     return (
-        <View
-            style={{
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
-                padding: 24,
-            }}
-            >
-            <Text>
-                {JSON.stringify(
-                games,
-                null,
-                2
+        <View style={styles.container}>
+
+            <FlatList
+                data={games}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={({ item }) => (
+                    <View style={styles.card}>
+                        <Text style={styles.title}>
+                            {item.titulo}
+                        </Text>
+
+                        <Text>
+                            {item.plataforma}
+                        </Text>
+
+                        <Text>
+                            {item.status}
+                        </Text>
+
+                        <Text>
+                            Nota: {item.nota}
+                        </Text>
+                    </View>          
                 )}
-            </Text>
+            />    
         </View>
     );
 }
+
+const styles = StyleSheet.create({
+
+  container: {
+    flex: 1,
+    padding: 16,
+  },
+
+  card: {
+    backgroundColor: '#fff',
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 12,
+
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+
+  title: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+});
