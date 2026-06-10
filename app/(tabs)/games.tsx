@@ -15,25 +15,30 @@ import { getGames } from '@/src/services/gameService';
 export default function Games() {
 
     const [games, setGames] = useState<any[]>([]);
+    const [refreshing, setRefreshing] = useState(false);
 
-    useEffect(() => {
-
-        async function loadGames() {
-            try {
-                const data = await getGames();
-                setGames(data);
-            } catch (error) {
-                console.log(error);
-            }
+    async function loadGames() {
+        try {
+            const data = await getGames();
+            setGames(data);
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setRefreshing(false);
         }
+    }
 
-        loadGames();
-    }, []);
+    useEffect(() => { loadGames(); }, []);
 
     return (
         <View style={styles.container}>
 
             <FlatList
+                refreshing={refreshing}
+                onRefresh={() => {
+                    setRefreshing(true);
+                    loadGames();
+                }}
                 data={games}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => (
