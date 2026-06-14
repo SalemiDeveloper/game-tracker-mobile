@@ -6,9 +6,14 @@ import {
     View,
 } from 'react-native';
 
+import {
+    useEffect,
+    useState
+} from 'react';
+
 import { Picker } from '@react-native-picker/picker';
 import { router } from 'expo-router';
-import { useState } from 'react';
+import { api } from '../api/client';
 import { createGame } from '../services/gameService';
 import { getToken } from '../storage/authStorage';
 
@@ -17,6 +22,31 @@ import { getToken } from '../storage/authStorage';
     const [title, setTitle] = useState('');
     const [rating, setRating] = useState('');
     const [status, setStatus] = useState('');
+    const [statusOptions, setStatusOptions] = useState<string[]>([]);
+
+    async function loadStatus() {
+
+        try {
+            const response = await api.get('/api/status-options');
+            setStatusOptions(response.data);
+
+        } catch (error: any) {
+            console.log(error);
+        }
+    }
+
+    function formatStatus(status: string) {
+        const labels: Record<string, string> = {
+            vou_jogar: 'Vou jogar',
+            jogando: 'Jogando',
+            zerei: 'Zerei',
+            '100_porcento': '100%',
+            platinei: 'Platinei',
+            abandonei: 'Abandonei'
+        };
+
+        return (labels[status] ?? status);
+    }
 
     async function handleSave() {
         const token =
@@ -35,6 +65,8 @@ import { getToken } from '../storage/authStorage';
             console.log(error);
         }
     }
+
+    useEffect(() => {loadStatus();}, []);
 
     return (
         <View style={styles.container}>
@@ -70,34 +102,21 @@ import { getToken } from '../storage/authStorage';
                 }
             >
                 <Picker.Item
-                label="Quero jogar"
-                value="vou_jogar"
+                    label="Selecione"
+                    value=""
                 />
 
-                <Picker.Item
-                label="Jogando"
-                value="jogando"
-                />
+                {statusOptions.map(
+                        (item) => (
 
-                <Picker.Item
-                label="Zerei"
-                value="zerei"
-                />
-
-                <Picker.Item
-                label="100%"
-                value="100_porcento"
-                />
-
-                <Picker.Item
-                label="Platinei"
-                value="platinei"
-                />
-
-                <Picker.Item
-                label="Dropei"
-                value="abandonei"
-                />
+                    <Picker.Item
+                        key={item}
+                        label={formatStatus(item)}
+                        value={item}
+                    />
+                        )
+                    )
+                }
 
             </Picker>
 
