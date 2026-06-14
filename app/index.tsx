@@ -1,7 +1,11 @@
+import { api } from '@/src/api/client';
 import { router } from 'expo-router';
 import { useEffect } from 'react';
 
-import { getToken } from '@/src/storage/authStorage';
+import {
+  getToken,
+  removeToken
+} from '@/src/storage/authStorage';
 
 export default function Home() {
 
@@ -11,10 +15,22 @@ export default function Home() {
 
       const token = await getToken();
 
-      if (token) {
-        router.replace('/(tabs)/dashboard');
-      } else {
+      if (!token) {
         router.replace('/login');
+        return;
+      }
+
+      try {
+        await api.get('/api/games');
+        router.replace('/(tabs)/dashboard');
+      } catch (error: any) {
+          if (error.response?.status === 401) {
+              await removeToken();
+              router.replace('/login');
+              return;
+          }
+
+          router.replace('/login');
       }
     }
 
