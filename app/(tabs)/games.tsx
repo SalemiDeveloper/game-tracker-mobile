@@ -1,16 +1,18 @@
+import { getGames } from '@/src/services/gameService';
+import { useFocusEffect } from '@react-navigation/native';
+import { router } from 'expo-router';
 import {
     FlatList,
     StyleSheet,
     Text,
+    TouchableOpacity,
     View,
 } from 'react-native';
 
 import {
-    useEffect,
-    useState,
+    useCallback,
+    useState
 } from 'react';
-
-import { getGames } from '@/src/services/gameService';
 
 export default function Games() {
 
@@ -28,10 +30,20 @@ export default function Games() {
         }
     }
 
-    useEffect(() => { loadGames(); }, []);
+    useFocusEffect(useCallback(() => { loadGames();}, [])
+);
 
     return (
         <View style={styles.container}>
+
+            <TouchableOpacity
+                style={styles.addButton}
+                onPress={() => router.push('/add-game')}
+                >
+                <Text style={styles.addButtonText}>
+                    + Novo jogo
+                </Text>
+            </TouchableOpacity>
 
             <FlatList
                 refreshing={refreshing}
@@ -89,4 +101,18 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 8,
   },
+
+  addButton: {
+    backgroundColor: '#111',
+    padding: 14,
+    borderRadius: 10,
+    marginTop: 20,
+    marginBottom: 16,
+    alignItems: 'center',
+    },
+
+  addButtonText: {
+    color: '#fff',
+    fontWeight: '600',
+    },
 });

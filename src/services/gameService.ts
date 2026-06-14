@@ -6,3 +6,10 @@ export async function getGames() {
 
     return response.data;
 }
+
+export async function createGame(data:any) {
+    
+    const response = await api.post('/api/games', data);
+
+    return response.data;
+}
