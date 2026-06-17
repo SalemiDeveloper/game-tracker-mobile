@@ -1,4 +1,5 @@
 import { getGames } from '@/src/services/gameService';
+import { formatStatus } from '@/src/utils/formatStatus';
 import { useFocusEffect } from '@react-navigation/native';
 import { router } from 'expo-router';
 import {
@@ -54,7 +55,16 @@ export default function Games() {
                 data={games}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => (
-                    <View style={styles.card}>
+                    //<View style={styles.card}>
+                    <TouchableOpacity
+                        style={styles.card}
+                        onPress={() =>
+                            router.push({
+                                pathname: '/game/[id]',
+                                params: {id: item.id.toString(),},
+                            })
+                        }
+                        >
                         <Text style={styles.title}>
                             {item.titulo}
                         </Text>
@@ -64,13 +74,14 @@ export default function Games() {
                         </Text>
 
                         <Text>
-                            {item.status}
+                            {formatStatus(item.status)}
                         </Text>
 
                         <Text>
                             Nota: {item.nota}
                         </Text>
-                    </View>          
+                    </TouchableOpacity>
+                    //</View>          
                 )}
             />    
         </View>

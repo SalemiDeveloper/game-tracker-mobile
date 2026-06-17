@@ -16,6 +16,7 @@ import { router } from 'expo-router';
 import { api } from '../api/client';
 import { createGame } from '../services/gameService';
 import { getToken } from '../storage/authStorage';
+import { formatStatus } from '../utils/formatStatus';
 
  export default function AddGameScreen() {
 
@@ -33,19 +34,6 @@ import { getToken } from '../storage/authStorage';
         } catch (error: any) {
             console.log(error);
         }
-    }
-
-    function formatStatus(status: string) {
-        const labels: Record<string, string> = {
-            vou_jogar: 'Vou jogar',
-            jogando: 'Jogando',
-            zerei: 'Zerei',
-            '100_porcento': '100%',
-            platinei: 'Platinei',
-            abandonei: 'Abandonei'
-        };
-
-        return (labels[status] ?? status);
     }
 
     async function handleSave() {
@@ -101,10 +89,6 @@ import { getToken } from '../storage/authStorage';
                 setStatus(value)
                 }
             >
-                <Picker.Item
-                    label="Selecione"
-                    value=""
-                />
 
                 {statusOptions.map(
                         (item) => (
