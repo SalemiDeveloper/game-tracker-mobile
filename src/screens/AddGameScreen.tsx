@@ -12,10 +12,9 @@ import {
 } from 'react';
 
 import { Picker } from '@react-native-picker/picker';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { api } from '../api/client';
-import { createGame } from '../services/gameService';
-import { getToken } from '../storage/authStorage';
+import { createGame, getGameById, updateGame } from '../services/gameService';
 import { formatStatus } from '../utils/formatStatus';
 
  export default function AddGameScreen() {
@@ -24,6 +23,7 @@ import { formatStatus } from '../utils/formatStatus';
     const [rating, setRating] = useState('');
     const [status, setStatus] = useState('');
     const [statusOptions, setStatusOptions] = useState<string[]>([]);
+    const { id } = useLocalSearchParams();
 
     async function loadStatus() {
 
@@ -36,25 +36,36 @@ import { formatStatus } from '../utils/formatStatus';
         }
     }
 
-    async function handleSave() {
-        const token =
-            await getToken();
+    async function loadGameData() {
+        if (!id) return;
 
-            //console.log(token);
         try {
-            await createGame({
-                titulo: title, 
-                nota: Number(rating),
-                status,
-            });
+            const game = await getGameById(id as string);
+            console.log('GAME DATA: ', game);
+            setTitle(game.titulo);
+            setRating(game.nota);
+            setStatus(game.status);
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
+    async function handleSave() {
+        try {
+            const payload = {titulo: title, nota: Number(rating), status};
+
+            if (id) {
+                await updateGame(id as string, payload);
+            } else {
+                await createGame(payload);
+            }
             router.back();
         } catch (error) {
             console.log(error);
         }
     }
 
-    useEffect(() => {loadStatus();}, []);
+    useEffect(() => {loadStatus(); loadGameData();}, []);
 
     return (
         <View style={styles.container}>
