@@ -21,3 +21,8 @@ export async function updateGame(id: string, data: {titulo: string, nota: number
     const response = await api.put(`/api/games/${id}`, data);
     return response.data;
 }
+
+export async function deleteGame(id: string) {
+    const response = await api.delete(`/api/games/${id}`);
+    return response.data;
+}

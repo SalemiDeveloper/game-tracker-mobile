@@ -10,12 +10,21 @@ import {
 
 import { router, useLocalSearchParams, } from 'expo-router';
 import { TouchableOpacity, } from 'react-native';
-import { getGameById } from '../services/gameService';
+import { deleteGame, getGameById } from '../services/gameService';
 import { formatStatus } from '../utils/formatStatus';
 
 export default function GameDetailsScreen() {
     const { id } = useLocalSearchParams();
     const [game, setGame] = useState<any>(null);
+
+    async function handleDelete() {
+        try {
+            await deleteGame(id as string);
+            router.back;
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     async function loadGame() {
         try {
@@ -113,6 +122,32 @@ export default function GameDetailsScreen() {
                 >
                     Editar Jogo
                 </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+                style={{
+                    backgroundColor:
+                    '#af0101',
+
+                    padding: 16,
+
+                    borderRadius: 12,
+
+                    alignItems:
+                    'center',
+                }}
+                onPress={handleDelete}
+            >
+
+                <Text
+                    style={{
+                    color: '#fff',
+                    fontWeight: '600',
+                    }}
+                >
+                    Excluir jogo
+                </Text>
+
             </TouchableOpacity>
         </View>
 
