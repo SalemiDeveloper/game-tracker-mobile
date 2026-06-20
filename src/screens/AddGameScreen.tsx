@@ -41,7 +41,6 @@ import { formatStatus } from '../utils/formatStatus';
 
         try {
             const game = await getGameById(id as string);
-            console.log('GAME DATA: ', game);
             setTitle(game.titulo);
             setRating(game.nota);
             setStatus(game.status);

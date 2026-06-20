@@ -26,35 +26,6 @@ export default function GameDetailsScreen() {
         }
     }
 
-//     async function
-// handleDelete() {
-
-//   try {
-
-//     console.log(
-//       'ANTES DELETE'
-//     );
-
-//     await deleteGame(
-//       id as string
-//     );
-
-//     console.log(
-//       'DEPOIS DELETE'
-//     );
-
-//     router.back();
-
-//     console.log(
-//       'DEPOIS BACK'
-//     );
-
-//   } catch (error) {
-
-//     console.log(error);
-//   }
-// }
-
     function confirmDelete() {
         Alert.alert('Excluir jogo', 'Tem certeza que deseja excluir este jogo?', 
             [   
