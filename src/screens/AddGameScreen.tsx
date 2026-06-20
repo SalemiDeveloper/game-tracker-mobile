@@ -24,6 +24,8 @@ import { formatStatus } from '../utils/formatStatus';
     const [status, setStatus] = useState('');
     const [statusOptions, setStatusOptions] = useState<string[]>([]);
     const { id } = useLocalSearchParams();
+    const [platform, setPlatform] = useState('');
+    const [genre, setGenre] = useState('');
 
     async function loadStatus() {
 
@@ -44,6 +46,8 @@ import { formatStatus } from '../utils/formatStatus';
             setTitle(game.titulo);
             setRating(game.nota);
             setStatus(game.status);
+            setPlatform(game.plataforma ?? '');
+            setGenre(game.genero ?? '');
         } catch (error) {
             console.log(error);
         }
@@ -51,7 +55,13 @@ import { formatStatus } from '../utils/formatStatus';
 
     async function handleSave() {
         try {
-            const payload = {titulo: title, nota: Number(rating), status};
+            const payload = {
+                titulo: title, 
+                nota: Number(rating), 
+                status,
+                plataforma: platform,
+                genero: genre,
+            };
 
             if (id) {
                 await updateGame(id as string, payload);
@@ -115,6 +125,20 @@ import { formatStatus } from '../utils/formatStatus';
             </Picker>
 
             </View>
+
+            <TextInput
+                placeholder="Plataforma"
+                value={platform}
+                onChangeText={setPlatform}
+                style={styles.input}
+            />
+
+            <TextInput
+                placeholder="Gênero"
+                value={genre}
+                onChangeText={setGenre}
+                style={styles.input}
+            />
 
             <TouchableOpacity 
                 onPress={handleSave}
