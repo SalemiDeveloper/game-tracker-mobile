@@ -9,7 +9,7 @@ import {
 } from 'react';
 
 import { router, useLocalSearchParams, } from 'expo-router';
-import { TouchableOpacity, } from 'react-native';
+import { Alert, TouchableOpacity, } from 'react-native';
 import { deleteGame, getGameById } from '../services/gameService';
 import { formatStatus } from '../utils/formatStatus';
 
@@ -20,10 +20,48 @@ export default function GameDetailsScreen() {
     async function handleDelete() {
         try {
             await deleteGame(id as string);
-            router.back;
+            router.replace('/(tabs)/games');
         } catch (error) {
             console.log(error);
         }
+    }
+
+//     async function
+// handleDelete() {
+
+//   try {
+
+//     console.log(
+//       'ANTES DELETE'
+//     );
+
+//     await deleteGame(
+//       id as string
+//     );
+
+//     console.log(
+//       'DEPOIS DELETE'
+//     );
+
+//     router.back();
+
+//     console.log(
+//       'DEPOIS BACK'
+//     );
+
+//   } catch (error) {
+
+//     console.log(error);
+//   }
+// }
+
+    function confirmDelete() {
+        Alert.alert('Excluir jogo', 'Tem certeza que deseja excluir este jogo?', 
+            [   
+                {text: 'Cancelar', style: 'cancel',},
+                {text: 'Excluir', style: 'destructive', onPress: handleDelete,},
+            ]
+        );
     }
 
     async function loadGame() {
@@ -136,7 +174,7 @@ export default function GameDetailsScreen() {
                     alignItems:
                     'center',
                 }}
-                onPress={handleDelete}
+                onPress={confirmDelete}
             >
 
                 <Text
