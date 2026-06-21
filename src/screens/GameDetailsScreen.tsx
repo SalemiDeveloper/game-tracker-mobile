@@ -106,6 +106,58 @@ export default function GameDetailsScreen() {
                 {' '}
                 {formatStatus(game.status)}
             </Text>
+            
+            <Text
+                style={{
+                fontSize: 18,
+                }}
+            >
+                Plataforma:
+                {' '}
+                {game.plataforma}
+            </Text>
+
+            <Text
+                style={{
+                fontSize: 18,
+                }}
+            >
+                Gênero:
+                {' '}
+                {game.genero}
+            </Text>
+
+            <Text
+                style={{
+                fontSize: 18,
+                }}
+            >
+                Ano:
+                {' '}
+                {game.ano_lancamento}
+            </Text>
+
+            <Text
+                style={{
+                fontSize: 18,
+                }}
+            >
+                Horas jogadas:
+                {' '}
+                {game.horas_jogadas}
+            </Text>
+
+            <Text
+                style={{
+                fontSize: 18,
+                }}
+            >
+                Review:
+            </Text>
+
+            <Text>
+                {game.review}
+            </Text>
 
             </View>
 
