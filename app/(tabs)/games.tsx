@@ -1,11 +1,14 @@
+import { api } from '@/src/api/client';
 import { getGames } from '@/src/services/gameService';
 import { formatStatus } from '@/src/utils/formatStatus';
+import { Picker } from '@react-native-picker/picker';
 import { useFocusEffect } from '@react-navigation/native';
 import { router } from 'expo-router';
 import {
     FlatList,
     StyleSheet,
     Text,
+    TextInput,
     TouchableOpacity,
     View,
 } from 'react-native';
@@ -19,6 +22,9 @@ export default function Games() {
 
     const [games, setGames] = useState<any[]>([]);
     const [refreshing, setRefreshing] = useState(false);
+    const [selectedStatus, setSelectedStatus] = useState('all');
+    const [statusOptions, setStatusOptions] = useState<string[]>([]);
+    const [search, setSearch] = useState('');
 
     async function loadGames() {
         try {
@@ -31,8 +37,24 @@ export default function Games() {
         }
     }
 
-    useFocusEffect(useCallback(() => { loadGames();}, [])
-);
+    async function loadStatus() {
+        try {
+            const response = await api.get('/api/status-options');
+            setStatusOptions(response.data);
+
+        } catch (error: any) {
+            console.log(error);
+        }
+    }
+
+    useFocusEffect(useCallback(() => { loadGames(); loadStatus();}, []));
+
+    const filteredGames = games.filter((game) => {
+      const matchesStatus = selectedStatus === 'all' || game.status === selectedStatus;
+      const matchesSearch = game.titulo.toLowerCase().includes(search.toLowerCase());
+      return (matchesStatus && matchesSearch);
+    }
+  );
 
     return (
         <View style={styles.container}>
@@ -46,13 +68,48 @@ export default function Games() {
                 </Text>
             </TouchableOpacity>
 
+            <Picker
+                selectedValue={selectedStatus}
+                onValueChange={setSelectedStatus}
+            >
+
+                <Picker.Item
+                    label="Todos"
+                    value="all"
+                />
+
+                {statusOptions.map(
+                    (item) => (
+                        <Picker.Item
+                            key={item}
+                            label={formatStatus(item)}
+                            value={item}
+                        />    
+                    )
+                )}
+            </Picker>
+
+            <TextInput
+                placeholder='Buscar jogo'
+                value={search}
+                onChangeText={setSearch}
+                style={{
+                    borderWidth: 1,
+                    borderColor: '#ccc',
+                    borderRadius: 8,
+                    padding: 12,
+                    marginBottom: 12,
+                }}
+            />
+
             <FlatList
                 refreshing={refreshing}
                 onRefresh={() => {
                     setRefreshing(true);
                     loadGames();
                 }}
-                data={games}
+                // data={games}
+                data={filteredGames}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => (
                     //<View style={styles.card}>
