@@ -99,7 +99,7 @@ import { formatStatus } from '../utils/formatStatus';
             />
 
             <TextInput
-                placeholder="Nota"
+                placeholder="Nota (0 a 10)"
                 style={styles.input}
                 value={rating}
                 onChangeText={setRating}
