@@ -26,6 +26,9 @@ import { formatStatus } from '../utils/formatStatus';
     const { id } = useLocalSearchParams();
     const [platform, setPlatform] = useState('');
     const [genre, setGenre] = useState('');
+    const [releaseYear, setReleaseYear] = useState('');
+    const [hoursPlayed, setHoursPlayed] = useState('');
+    const [review, setReview] = useState('');
 
     async function loadStatus() {
 
@@ -48,6 +51,9 @@ import { formatStatus } from '../utils/formatStatus';
             setStatus(game.status);
             setPlatform(game.plataforma ?? '');
             setGenre(game.genero ?? '');
+            setReleaseYear(game.ano_lancamento?.toString() ?? '');
+            setHoursPlayed(game.horas_jogadas?.toString() ?? '');
+            setReview(game.review ?? '');
         } catch (error) {
             console.log(error);
         }
@@ -61,6 +67,9 @@ import { formatStatus } from '../utils/formatStatus';
                 status,
                 plataforma: platform,
                 genero: genre,
+                ano_lancamento: releaseYear ? Number(releaseYear): null,
+                horas_jogadas: hoursPlayed ? Number(hoursPlayed): null,
+                review,
             };
 
             if (id) {
@@ -140,6 +149,31 @@ import { formatStatus } from '../utils/formatStatus';
                 style={styles.input}
             />
 
+            <TextInput
+            placeholder='Ano de lançamento'
+            value={releaseYear}
+            onChangeText={setReleaseYear}
+            keyboardType='numeric'
+            style={styles.input}
+            />
+
+            <TextInput
+            placeholder='Horas jogadas'
+            value={hoursPlayed}
+            onChangeText={setHoursPlayed}
+            keyboardType='numeric'
+            style={styles.input}
+            />
+
+            <TextInput
+            placeholder='Review (opcional)'
+            value={review}
+            onChangeText={setReview}
+            multiline
+            numberOfLines={4}
+            style={styles.input}
+            />
+
             <TouchableOpacity 
                 onPress={handleSave}
                 style={styles.button}>
@@ -162,7 +196,8 @@ import { formatStatus } from '../utils/formatStatus';
     title: {
         fontSize: 28,
         fontWeight: 'bold',
-        marginBottom: 24,
+        marginBottom: 20,
+        marginTop: 40,
     },
 
     input: {
