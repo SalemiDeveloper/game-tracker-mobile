@@ -6,8 +6,7 @@ import {
 import {
     StyleSheet,
     Text,
-    TouchableOpacity,
-    View,
+    View
 } from 'react-native';
 import { getGames } from '../services/gameService';
 import { removeToken } from '../storage/authStorage';
@@ -53,56 +52,72 @@ export default function DashboardScreen() {
     const totalHours = games.reduce((acc, game) => acc + Number(game.horas_jogadas ?? 0), 0);
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>
+        <View
+        style={{
+            flex: 1,
+            padding: 20,
+            paddingTop: 40,
+            gap: 16,
+        }}
+        >
+            <Text
+                style={{
+                    fontSize: 28,
+                    fontWeight: 700,
+                }}
+            >
                 Dashboard 🎮
             </Text>
 
-            <Text>
-                Total de jogos:
-                {totalGames}
-            </Text>
+            <View
+                style={{
+                    flexDirection: 'row',
+                    flexWrap: 'wrap',
+                    gap: 12,
+                }}
+            >
+                <View style={styles.card}>
+                    <Text>Total</Text>
+                    <Text style={styles.number}>
+                        {totalGames}
+                    </Text>
+                </View>
 
-            <Text>
-                Jogando:
-                {playing}
-            </Text>
+                <View style={styles.card}>
+                    <Text>Jogando</Text>
+                    <Text style={styles.number}>
+                        {playing}
+                    </Text>
+                </View>
 
-            <Text>
-                Finalizados:
-                {finalizados}
-            </Text>
+                <View style={styles.card}>
+                    <Text>Vou jogar</Text>
+                    <Text style={styles.number}>
+                        {backlog}
+                    </Text>
+                </View>
 
-            <Text>
-                Platinados:
-                {platinum}
-            </Text>
+                <View style={styles.card}>
+                    <Text>Finalizados (zerados + 100% + platinas)</Text>
+                    <Text style={styles.number}>
+                        {finalizados}
+                    </Text>
+                </View>
 
-            <Text>
-                Quero jogar:
-                {backlog}
-            </Text>
+                <View style={styles.card}>
+                    <Text>Média</Text>
+                    <Text style={styles.number}>
+                        {averageRating}
+                    </Text>
+                </View>
 
-            <Text>
-                Média:
-                {averageRating}
-            </Text>
-
-            <Text>
-                Horas jogadas:
-                {totalHours}
-            </Text>
-
-            <TouchableOpacity
-                style={styles.button}
-                onPress={handleLogout}
-                >
-
-                <Text style={styles.buttonText}>
-                    Sair
-                </Text>
-
-            </TouchableOpacity>
+                <View style={styles.card}>
+                    <Text>Horas</Text>
+                    <Text style={styles.number}>
+                        {totalHours}
+                    </Text>
+                </View>
+            </View>
         </View>
     );
 }
@@ -132,5 +147,18 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontWeight: 'bold',
     fontSize: 16,
+  },
+
+  card: {
+    width: '48%',
+    backgroundColor: '#f2f2f2',
+    padding: 20,
+    borderRadius: 12,
+    gap: 8,
+  },
+
+  number: {
+    fontSize: 24,
+    fontWeight: '700',
   },
 });
