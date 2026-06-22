@@ -25,6 +25,7 @@ export default function Games() {
     const [selectedStatus, setSelectedStatus] = useState('all');
     const [statusOptions, setStatusOptions] = useState<string[]>([]);
     const [search, setSearch] = useState('');
+    const [sortBy, setSortBy] = useState('recent');
 
     async function loadGames() {
         try {
@@ -50,11 +51,30 @@ export default function Games() {
     useFocusEffect(useCallback(() => { loadGames(); loadStatus();}, []));
 
     const filteredGames = games.filter((game) => {
-      const matchesStatus = selectedStatus === 'all' || game.status === selectedStatus;
-      const matchesSearch = game.titulo.toLowerCase().includes(search.toLowerCase());
-      return (matchesStatus && matchesSearch);
-    }
-  );
+        const matchesStatus = selectedStatus === 'all' || game.status === selectedStatus;
+        const matchesSearch = game.titulo.toLowerCase().includes(search.toLowerCase());
+
+      return ( matchesStatus && matchesSearch );
+    }).sort((a, b) => {
+            switch (sortBy) {
+
+        case 'highest_rating':
+          return (Number(b.nota) - Number(a.nota));
+
+        case 'lowest_rating':
+          return (Number(a.nota) - Number(b.nota));
+
+        case 'alphabetical':
+          return a.titulo.localeCompare(b.titulo);
+
+        case 'most_hours':
+          return (Number(b.horas_jogadas ?? 0) - Number(a.horas_jogadas ?? 0));
+
+        case'recent':
+        default:
+          return (new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+      }
+    });
 
     return (
         <View style={styles.container}>
@@ -87,6 +107,36 @@ export default function Games() {
                         />    
                     )
                 )}
+            </Picker>
+
+            <Picker
+                selectedValue={sortBy}
+                onValueChange={setSortBy}
+            >
+                <Picker.Item 
+                    label="Mais recentes"
+                    value="recent"
+                />
+
+                <Picker.Item 
+                    label="Maior nota"
+                    value="highest_rating"
+                />
+
+                <Picker.Item 
+                    label="Menor nota"
+                    value="lowest_rating"
+                />
+
+                <Picker.Item 
+                    label="A - Z"
+                    value="alphabetical"
+                />
+
+                <Picker.Item 
+                    label="Mais horas"
+                    value="most_hours"
+                />
             </Picker>
 
             <TextInput
